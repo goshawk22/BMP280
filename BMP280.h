@@ -81,7 +81,7 @@ public:
     /** Read the current humidity value (humidity %) from BME280 sensor
      *
      */
-    float getHumidity(void);
+  //  float getHumidity(void);
 
 private:
 

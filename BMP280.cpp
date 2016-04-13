@@ -83,7 +83,7 @@ void BME280::initialize()
  
     DEBUG_PRINT("dig_P = 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x\n", dig_P1, dig_P2, dig_P3, dig_P4, dig_P5, dig_P6, dig_P7, dig_P8, dig_P9);
  
-    cmd[0] = 0xA1; // read dig_H regs
+  /*  cmd[0] = 0xA1; // read dig_H regs
     i2c.write(address, cmd, 1);
     i2c.read(address, cmd, 1);
      cmd[1] = 0xE1; // read dig_H regs
@@ -98,6 +98,7 @@ void BME280::initialize()
     dig_H6 = cmd[7];
  
     DEBUG_PRINT("dig_H = 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x\n", dig_H1, dig_H2, dig_H3, dig_H4, dig_H5, dig_H6);
+*/
 }
  
 float BME280::getTemperature()
@@ -163,7 +164,7 @@ float BME280::getPressure()
     return (pressf/100.0f);
 }
  
-float BME280::getHumidity()
+/*float BME280::getHumidity()
 {
     uint32_t hum_raw;
     float humf;
@@ -189,4 +190,4 @@ float BME280::getHumidity()
     humf = (float)(v_x1 >> 12);
  
     return (humf/1024.0f);
-}
+}*/
