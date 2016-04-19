@@ -1,21 +1,21 @@
 /**
- *  BME280 Combined humidity and pressure sensor library
+ *  BMP280 Combined humidity and pressure sensor library
  *
  *  @author  Toyomasa Watarai
  *  @version 1.0
  *  @date    06-April-2015
  *
- *  Library for "BME280 temperature, humidity and pressure sensor module" from Switch Science
+ *  Library for "BMP280 temperature, humidity and pressure sensor module" from Switch Science
  *    https://www.switch-science.com/catalog/2236/
  *
- *  For more information about the BME280:
- *    http://ae-bst.resource.bosch.com/media/products/dokumente/bme280/BST-BME280_DS001-10.pdf
+ *  For more information about the BMP280:
+ *    http://ae-bst.resource.bosch.com/media/products/dokumente/BMP280/BST-BMP280_DS001-10.pdf
  */
 
 #include "mbed.h"
 #include "BMP280.h"
 
-BME280::BME280(PinName sda, PinName scl, char slave_adr)
+BMP280::BMP280(PinName sda, PinName scl, char slave_adr)
     :
     i2c_p(new I2C(sda, scl)), 
     i2c(*i2c_p),
@@ -25,7 +25,7 @@ BME280::BME280(PinName sda, PinName scl, char slave_adr)
     initialize();
 }
 
-BME280::BME280(I2C &i2c_obj, char slave_adr)
+BMP280::BMP280(I2C &i2c_obj, char slave_adr)
     :
     i2c_p(NULL), 
     i2c(i2c_obj),
@@ -35,13 +35,13 @@ BME280::BME280(I2C &i2c_obj, char slave_adr)
     initialize();
 }
 
-BME280::~BME280()
+BMP280::~BMP280()
 {
     if (NULL != i2c_p)
         delete  i2c_p;
 }
     
-void BME280::initialize()
+void BMP280::initialize()
 {
     char cmd[18];
  
@@ -101,7 +101,7 @@ void BME280::initialize()
 */
 }
  
-float BME280::getTemperature()
+float BMP280::getTemperature()
 {
     uint32_t temp_raw;
     float tempf;
@@ -126,7 +126,7 @@ float BME280::getTemperature()
     return (tempf/100.0f);
 }
  
-float BME280::getPressure()
+float BMP280::getPressure()
 {
     uint32_t press_raw;
     float pressf;
@@ -163,31 +163,3 @@ float BME280::getPressure()
     pressf = (float)press;
     return (pressf/100.0f);
 }
- 
-/*float BME280::getHumidity()
-{
-    uint32_t hum_raw;
-    float humf;
-    char cmd[4];
- 
-    cmd[0] = 0xfd; // hum_msb
-    i2c.write(address, cmd, 1);
-    i2c.read(address, &cmd[1], 2);
- 
-    hum_raw = (cmd[1] << 8) | cmd[2];
- 
-    int32_t v_x1;
- 
-    v_x1 = t_fine - 76800;
-    v_x1 =  (((((hum_raw << 14) -(((int32_t)dig_H4) << 20) - (((int32_t)dig_H5) * v_x1)) +
-               ((int32_t)16384)) >> 15) * (((((((v_x1 * (int32_t)dig_H6) >> 10) *
-                                            (((v_x1 * ((int32_t)dig_H3)) >> 11) + 32768)) >> 10) + 2097152) *
-                                            (int32_t)dig_H2 + 8192) >> 14));
-    v_x1 = (v_x1 - (((((v_x1 >> 15) * (v_x1 >> 15)) >> 7) * (int32_t)dig_H1) >> 4));
-    v_x1 = (v_x1 < 0 ? 0 : v_x1);
-    v_x1 = (v_x1 > 419430400 ? 419430400 : v_x1);
- 
-    humf = (float)(v_x1 >> 12);
- 
-    return (humf/1024.0f);
-}*/

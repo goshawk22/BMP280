@@ -18,7 +18,7 @@
 #include "mbed.h"
 
 //#define _DEBUG
-#define DEFAULT_SLAVE_ADDRESS (0x76 << 1)
+#define DEFAULT_SLAVE_ADDRESS (0x77 << 1)
 
 #ifdef _DEBUG
 extern Serial pc;
@@ -36,7 +36,7 @@ extern Serial pc;
  *  @endcode
  */
  
-class BME280
+class BMP280
 {
 public:
 
@@ -47,7 +47,7 @@ public:
      * @param scl I2C-bus SCL pin
      * @param slave_adr (option) I2C-bus address (default: 0x76)
      */
-    BME280(PinName sda, PinName sck, char slave_adr = DEFAULT_SLAVE_ADDRESS);
+    BMP280(PinName sda, PinName sck, char slave_adr = DEFAULT_SLAVE_ADDRESS);
 
     /** Create a BME280 instance
      *  which is connected to specified I2C pins with specified address
@@ -55,11 +55,11 @@ public:
      * @param i2c_obj I2C object (instance)
      * @param slave_adr (option) I2C-bus address (default: 0x76)
      */
-    BME280(I2C &i2c_obj, char slave_adr = DEFAULT_SLAVE_ADDRESS);
+    BMP280(I2C &i2c_obj, char slave_adr = DEFAULT_SLAVE_ADDRESS);
 
     /** Destructor of BME280
      */
-    virtual ~BME280();
+    virtual ~BMP280();
 
     /** Initializa BME280 sensor
      *
