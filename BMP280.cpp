@@ -5,6 +5,8 @@
  *  @version 1.0
  *  @date    06-April-2015
  *
+ * bugfixing by charly
+ *
  *  Library for "BMP280 temperature, humidity and pressure sensor module" from Switch Science
  *    https://www.switch-science.com/catalog/2236/
  *
@@ -19,7 +21,7 @@ BMP280::BMP280(PinName sda, PinName scl, char slave_adr)
     :
     i2c_p(new I2C(sda, scl)), 
     i2c(*i2c_p),
-    address(slave_adr),
+    address(slave_adr<<1),
     t_fine(0)
 {
     initialize();
@@ -29,7 +31,7 @@ BMP280::BMP280(I2C &i2c_obj, char slave_adr)
     :
     i2c_p(NULL), 
     i2c(i2c_obj),
-    address(slave_adr),
+    address(slave_adr<<1),
     t_fine(0)
 {
     initialize();
@@ -45,16 +47,17 @@ void BMP280::initialize()
 {
     char cmd[18];
  
-    cmd[0] = 0xf2; // ctrl_hum
-    cmd[1] = 0x01; // Humidity oversampling x1
-    i2c.write(address, cmd, 2);
+    //cmd[0] = 0xf2; // ctrl_hum
+    //cmd[1] = 0x01; // Humidity oversampling x1
+    //i2c.write(address, cmd, 2);
  
     cmd[0] = 0xf4; // ctrl_meas
-    cmd[1] = 0x27; // Temparature oversampling x1, Pressure oversampling x1, Normal mode
+    //cmd[1] = 0x27; // Temparature oversampling x1, Pressure oversampling x1, Normal mode
+    cmd[1] = 0b01010111; // Temparature oversampling x2 010, Pressure oversampling x16 101, Normal mode 11
     i2c.write(address, cmd, 2);
  
     cmd[0] = 0xf5; // config
-    cmd[1] = 0xa0; // Standby 1000ms, Filter off
+    cmd[1] = 0b10111100; // Standby 1000ms, Filter x16
     i2c.write(address, cmd, 2);
  
     cmd[0] = 0x88; // read dig_T regs
@@ -65,7 +68,8 @@ void BMP280::initialize()
     dig_T2 = (cmd[3] << 8) | cmd[2];
     dig_T3 = (cmd[5] << 8) | cmd[4];
  
-    DEBUG_PRINT("dig_T = 0x%x, 0x%x, 0x%x\n", dig_T1, dig_T2, dig_T3);
+    DEBUG_PRINT("dig_T = 0x%x, 0x%x, 0x%x\n\r", dig_T1, dig_T2, dig_T3);
+    DEBUG_PRINT("dig_T = %d, %d, %d\n\r", dig_T1, dig_T2, dig_T3);
  
     cmd[0] = 0x8E; // read dig_P regs
     i2c.write(address, cmd, 1);
@@ -103,7 +107,7 @@ void BMP280::initialize()
  
 float BMP280::getTemperature()
 {
-    uint32_t temp_raw;
+    int32_t temp_raw;
     float tempf;
     char cmd[4];
  
@@ -112,17 +116,19 @@ float BMP280::getTemperature()
     i2c.read(address, &cmd[1], 3);
  
     temp_raw = (cmd[1] << 12) | (cmd[2] << 4) | (cmd[3] >> 4);
+    DEBUG_PRINT("\r\ntemp_raw:%d",temp_raw);
  
-    int32_t temp;
+    int32_t temp1, temp2,temp;
  
-    temp =
-        (((((temp_raw >> 3) - (dig_T1 << 1))) * dig_T2) >> 11) +
-        ((((((temp_raw >> 4) - dig_T1) * ((temp_raw >> 4) - dig_T1)) >> 12) * dig_T3) >> 14);
- 
-    t_fine = temp;
-    temp = (temp * 5 + 128) >> 8;
+    temp1 =((((temp_raw >> 3) - (dig_T1 << 1))) * dig_T2) >> 11;
+    temp2 =(((((temp_raw >> 4) - dig_T1) * ((temp_raw >> 4) - dig_T1)) >> 12) * dig_T3) >> 14;
+    DEBUG_PRINT("   temp1:%d   temp2:%d",temp1, temp2);
+    t_fine = temp1+temp2;
+    DEBUG_PRINT("   t_fine:%d",t_fine);
+    temp = (t_fine * 5 + 128) >> 8;
     tempf = (float)temp;
- 
+    DEBUG_PRINT("   tempf:%f",tempf);
+  
     return (tempf/100.0f);
 }
  

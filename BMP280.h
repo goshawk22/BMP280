@@ -18,7 +18,9 @@
 #include "mbed.h"
 
 //#define _DEBUG
-#define DEFAULT_SLAVE_ADDRESS (0x77 << 1)
+// default address with SDO High 0x77
+// address with SDO LOW 0x76
+#define DEFAULT_SLAVE_ADDRESS (0x77)
 
 #ifdef _DEBUG
 extern Serial pc;
@@ -30,7 +32,8 @@ extern Serial pc;
  
 /** BME280 class
  *
- *  BME280: A library to correct environmental data using Boshe BME280 device
+ *  BME280: A library to read environmental data using Bosch BME280 device
+ * Readds temperature and pressure
  *
  *  BME280 is an environmental sensor
  *  @endcode
@@ -45,7 +48,7 @@ public:
      *
      * @param sda I2C-bus SDA pin
      * @param scl I2C-bus SCL pin
-     * @param slave_adr (option) I2C-bus address (default: 0x76)
+     * @param slave_adr (option) I2C-bus address (default: 0x77)
      */
     BMP280(PinName sda, PinName sck, char slave_adr = DEFAULT_SLAVE_ADDRESS);
 
@@ -53,7 +56,7 @@ public:
      *  which is connected to specified I2C pins with specified address
      *
      * @param i2c_obj I2C object (instance)
-     * @param slave_adr (option) I2C-bus address (default: 0x76)
+     * @param slave_adr (option) I2C-bus address (default: 0x77)
      */
     BMP280(I2C &i2c_obj, char slave_adr = DEFAULT_SLAVE_ADDRESS);
 
