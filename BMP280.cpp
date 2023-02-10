@@ -47,12 +47,7 @@ void BMP280::initialize()
 {
     char cmd[18];
 
-    //cmd[0] = 0xf2; // ctrl_hum
-    //cmd[1] = 0x01; // Humidity oversampling x1
-    //i2c.write(address, cmd, 2);
-
     cmd[0] = 0xf4; // ctrl_meas
-    //cmd[1] = 0x27; // Temparature oversampling x1, Pressure oversampling x1, Normal mode
     cmd[1] = 0b01010111; // Temparature oversampling x2 010, Pressure oversampling x16 101, Normal mode 11
     i2c.write(address, cmd, 2);
 
@@ -81,23 +76,6 @@ void BMP280::initialize()
     dig_P7 = (cmd[13] << 8) | cmd[12];
     dig_P8 = (cmd[15] << 8) | cmd[14];
     dig_P9 = (cmd[17] << 8) | cmd[16];
-
-
-  /*  cmd[0] = 0xA1; // read dig_H regs
-    i2c.write(address, cmd, 1);
-    i2c.read(address, cmd, 1);
-     cmd[1] = 0xE1; // read dig_H regs
-    i2c.write(address, &cmd[1], 1);
-    i2c.read(address, &cmd[1], 7);
-
-    dig_H1 = cmd[0];
-    dig_H2 = (cmd[2] << 8) | cmd[1];
-    dig_H3 = cmd[3];
-    dig_H4 = (cmd[4] << 4) | (cmd[5] & 0x0f);
-    dig_H5 = (cmd[6] << 4) | ((cmd[5]>>4) & 0x0f);
-    dig_H6 = cmd[7];
- 
-*/
 }
 
 float BMP280::getTemperature()
