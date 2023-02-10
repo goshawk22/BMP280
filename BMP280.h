@@ -17,19 +17,10 @@
 
 #include "mbed.h"
 
-//#define _DEBUG
 // default address with SDO High 0x77
 // address with SDO LOW 0x76
 #define DEFAULT_SLAVE_ADDRESS (0x77)
 
-#ifdef _DEBUG
-extern Serial pc;
-#define DEBUG_PRINT(...) pc.printf(__VA_ARGS__)
-#else
-#define DEBUG_PRINT(...)
-#endif
-
- 
 /** BME280 class
  *
  *  BME280: A library to read environmental data using Bosch BME280 device
@@ -80,11 +71,6 @@ public:
      *
      */
     float getPressure(void);
-
-    /** Read the current humidity value (humidity %) from BME280 sensor
-     *
-     */
-  //  float getHumidity(void);
 
 private:
 
