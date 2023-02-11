@@ -134,6 +134,6 @@ float BMP280::getPressure()
     var1 = ((int32_t)dig_P9 * ((int32_t)(((press >> 3) * (press >> 3)) >> 13))) >> 12;
     var2 = (((int32_t)(press >> 2)) * (int32_t)dig_P8) >> 13;
     press = (press + ((var1 + var2 + dig_P7) >> 4));
-
-    return (float)press;
+    pressf = (float)press;
+    return (pressf / 100.0f);
 }
