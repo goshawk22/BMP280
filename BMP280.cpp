@@ -27,16 +27,6 @@ BMP280::BMP280(PinName sda, PinName scl, char slave_adr)
     initialize();
 }
 
-BMP280::BMP280(I2C &i2c_obj, char slave_adr)
-    :
-    i2c_p(NULL), 
-    i2c(i2c_obj),
-    address(slave_adr<<1),
-    t_fine(0)
-{
-    initialize();
-}
-
 BMP280::~BMP280()
 {
     if (NULL != i2c_p)
@@ -76,6 +66,12 @@ void BMP280::initialize()
     dig_P7 = (cmd[13] << 8) | cmd[12];
     dig_P8 = (cmd[15] << 8) | cmd[14];
     dig_P9 = (cmd[17] << 8) | cmd[16];
+}
+
+void BMP280::deInit()
+{
+    i2c.stop();
+    i2c.free();
 }
 
 float BMP280::getTemperature()

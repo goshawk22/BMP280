@@ -55,12 +55,19 @@ public:
      */
     virtual ~BMP280();
 
-    /** Initializa BME280 sensor
+    /** Initialize BME280 sensor
      *
      *  Configure sensor setting and read parameters for calibration
      *
      */
     void initialize(void);
+
+    /** Deinitialize BME280 sensor
+     *
+     *  Free the I2C object
+     *
+     */
+    void deInit(void);
 
     /** Read the current temperature value (degree Celsius) from BME280 sensor
      *
